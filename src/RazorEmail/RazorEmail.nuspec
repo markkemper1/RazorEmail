@@ -7,6 +7,9 @@
         <owners>$author$</owners>
         <projectUrl>http://github.com/markkemper1/RazorEmail</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <summary>
+            A razor email templating library. Works with console, win services and web applications.
+        </summary>
         <description>
             A razor email templating library. The library uses the Razor engine for templating and provides a simple framework for working with emails
 
