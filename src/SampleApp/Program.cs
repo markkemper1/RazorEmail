@@ -21,7 +21,7 @@ namespace SampleApp
                                                  }
                         };
                     
-            RazorMailer .Build("ForgotPassword", mySampleModel,"toaddress@test.com", "John Doe")
+            RazorMailer .Build("ForgotPassword", mySampleModel,"john.doe@test.com", "John Doe")
                         .WithHeader("X-RazorMail-Send-At", DateTime.Now.ToLongTimeString())
                         .ToMailMessage()
                         .SendAsync( (x, m) =>

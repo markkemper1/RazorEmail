@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+     <PropertyGroup>
+	    <SolutionToCompile>..\src\RazorEmail.sln</SolutionToCompile>
+         <Major>1</Major>
+         <Minor>0</Minor>
+         <Build>0</Build>
+         <Revision>0</Revision>
+         <BuildOutputDir>build</BuildOutputDir>
+         <MSBuildMercurialPath>.</MSBuildMercurialPath>
+         <MSBuildCommunityTasksPath>.</MSBuildCommunityTasksPath>
+         <NugetExe>..\src\.nuget\nuget.exe</NugetExe>
+     </PropertyGroup>
+
+    <Import Project="..\Tools\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+    <Import Project="build-version.msbuild" />
+    <Import Project="build-nuget.msbuild" />
+    
+    <ItemGroup>
+        <ProjectsToNuGet Include="..\src\RazorEmail\RazorEmail.csproj" />
+    </ItemGroup>
+
+    <Target Name="Clean">  
+      <RemoveDir Directories="$(BuildOutputDir)" />
+     </Target>
+ 
+     <Target Name="Build" DependsOnTargets="Clean">
+         <MakeDir Directories="$(OutputDirectory)" />
+         <MSBuild Projects="$(SolutionToCompile)"
+            Properties="Configuration=Release" />
+     </Target>
+
+    <Target Name="Package" DependsOnTargets="Clean;VersionSolutionInfo;Build;Nuget">
+    </Target>
+
+    <Target Name="Publish" DependsOnTargets="Clean;VersionSolutionInfo;Build;NugetPackageAndPush">
+    </Target>
+
+
+</Project>

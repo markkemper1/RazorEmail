@@ -8,8 +8,8 @@
     <ProjectGuid>{A644D3BC-83F6-4F92-93A6-524F06B8CE04}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RazorMail.Test</RootNamespace>
-    <AssemblyName>RazorMail.Test</AssemblyName>
+    <RootNamespace>RazorEmail.Test</RootNamespace>
+    <AssemblyName>RazorEmail.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\src\</SolutionDir>
@@ -75,9 +75,9 @@
     <Content Include="Templates\ForgotPassword.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RazorMail\RazorMail.csproj">
+    <ProjectReference Include="..\RazorEmail\RazorEmail.csproj">
       <Project>{0B4C7E49-DDCA-4397-A75E-CB13A841AB3A}</Project>
-      <Name>RazorMail</Name>
+      <Name>RazorEmail</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

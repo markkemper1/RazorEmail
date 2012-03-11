@@ -50,7 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="EmailTemplates\ForgotPassword.plain_html.cshtml">
+    <None Include="EmailTemplates\ForgotPassword.text_html.cshtml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="EmailTemplates\Layout.cshtml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -60,9 +63,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RazorMail\RazorMail.csproj">
+    <ProjectReference Include="..\RazorEmail\RazorEmail.csproj">
       <Project>{0B4C7E49-DDCA-4397-A75E-CB13A841AB3A}</Project>
-      <Name>RazorMail</Name>
+      <Name>RazorEmail</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

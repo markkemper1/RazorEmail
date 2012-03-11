@@ -5,3 +5,5 @@ obj
 ReSharper
 /src/_ReSharper.RazorMail
 /src/packages
+/src/RazorEmail.sln.switchReferences.xml
+/src/RazorEmail.suo
