@@ -7,6 +7,20 @@
         <owners>$author$</owners>
         <projectUrl>http://github.com/markkemper1/RazorEmail</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>$description$</description>
+        <description>
+            A razor email templating library. The library uses the Razor engine for templating and provides a simple framework for working with emails
+
+            The workflow for the library is as follows:
+
+            1. You create an xml definition of your email, including default to address, cc address, bcc address, headers, subjects, sender address (and optional inline body elements)
+            2. Create a razor template file for the html view and plain text view. (_Layouts are supported)
+            3. Send your email by calling
+                RazorMailer.Build(TEMPLATE_NAME, YOUR_MODEL_OBJECT, TO_ADDRESS, TO_DISPALY_NAME = null)
+                    .ToMailMessage()
+                    .Send();
+
+            More info can be found here.
+            http://github.com/markkemper1/RazorEmail
+        </description>
     </metadata>
 </package>
