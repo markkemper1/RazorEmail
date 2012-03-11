@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<email>
+    <subject>the inline text content</subject>
+    <from>noreply@jobping.com</from>
+    <cc>
+        <add display="visible person">test@bcc.com</add>
+        <add display="visible person 2">test2@bcc.com</add>
+        <add display="visible person 3">test3@bcc.com</add>
+    </cc>
+    <views>
+        <add  media-type="text/html"><![CDATA[<html>
+        
+       is the
+body @Model.Link
+</html>]]></add>
+    </views>
+</email>
