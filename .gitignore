@@ -4,3 +4,4 @@ bin
 obj
 ReSharper
 /src/_ReSharper.RazorMail
+/src/packages
