@@ -7,7 +7,7 @@
          <Minor>0</Minor>
          <Build>0</Build>
          <Revision>0</Revision>
-         <BuildOutputDir>build</BuildOutputDir>
+         <BuildOutputDir>..\bin</BuildOutputDir>
          <MSBuildMercurialPath>.</MSBuildMercurialPath>
          <MSBuildCommunityTasksPath>.</MSBuildCommunityTasksPath>
          <NugetExe>..\src\.nuget\nuget.exe</NugetExe>
@@ -26,6 +26,7 @@
      </Target>
  
      <Target Name="Build" DependsOnTargets="Clean">
+         <MakeDir Directories="$(BuildOutputDir)" />
          <MakeDir Directories="$(OutputDirectory)" />
          <MSBuild Projects="$(SolutionToCompile)"
             Properties="Configuration=Release" />

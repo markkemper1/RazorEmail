@@ -4,14 +4,14 @@
 
     <Target Name="Nuget" Inputs="@(ProjectsToNuGet)"  Outputs="%(Identity).Dummy"  >
         <Message Text="@(ProjectsToNuGet)" />
-        <Exec Command="$(NugetExe) pack @(ProjectsToNuGet) -Build -OutputDirectory ."/>
+        <Exec Command="$(NugetExe) pack @(ProjectsToNuGet) -Build -OutputDirectory $(BuildOutputDir)"/>
     </Target>
 
     <Target Name="NugetPush" >
         <ItemGroup>
-            <PackageFile Include="..\Build\*.nupkg" />
+            <PackageFile Include="..\bin\*.nupkg" />
         </ItemGroup>
-        <Message Text="@(PackageFile)" />
+        <Message Text="PackgeFile: @(PackageFile)" />
         <Exec Command="$(NugetExe) push %(PackageFile.Identity)"  ContinueOnError="true"/>
     </Target>
 
