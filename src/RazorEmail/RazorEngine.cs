@@ -2,7 +2,7 @@
 using System.IO;
 using RazorEngine.Templating;
 
-namespace RazorMail
+namespace RazorEmail
 {
     public interface IRazorEngine : IDisposable
     {
@@ -13,7 +13,6 @@ namespace RazorMail
 
     public class RazorEngine : IRazorEngine
     {
-        private readonly string baseDir;
         private readonly ITemplateService templateService;
 
         public static Func<string, ITemplateService> DefaultTemplateServiceUsingBaseDir = baseDir =>
@@ -38,13 +37,12 @@ namespace RazorMail
             if(!Directory.Exists(baseDir))
                 throw new ArgumentException("The base directory does not exist: " + baseDir);
 
-            this.baseDir = baseDir;
             this.templateService = templateService;
         }
 
         public bool DoesTemplateExist<T>(string templateName, T model)
         {
-            return this.templateService.Resolve<T>(templateName, model) != null;
+            return this.templateService.Resolve(templateName, model) != null;
         }
 
         public string RenderContentToString<T>(string content, T model)

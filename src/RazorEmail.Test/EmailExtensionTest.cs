@@ -4,7 +4,7 @@ using System.Net.Mail;
 using System.Threading;
 using NUnit.Framework;
 
-namespace RazorMail.Test
+namespace RazorEmail.Test
 {
     [TestFixture]
     public class EmailExtensionTest
@@ -31,7 +31,7 @@ namespace RazorMail.Test
             var message = new MailMessage("test@test.com", "test@test.com", "subject", "body");
 
             var wait = new ManualResetEvent(false);
-            message.SendAsync(x=>
+            message.SendAsync((x,client)=>
                                   {
                                       Assert.AreEqual("test1State", x);
                                       Trace.WriteLine(x);
@@ -45,12 +45,12 @@ namespace RazorMail.Test
         [Test]
         public void should_add_any_headers_to_mail_message()
         {
-            var email = new Email()
+            var email = new Email
                             {
-                                Headers = new Email.Header[2]
+                                Headers = new[]
                                               {
-                                                  new Email.Header() {Key = "a", Value = "A"},
-                                                  new Email.Header() {Key = "b", Value = "B"},
+                                                  new Email.Header {Key = "a", Value = "A"},
+                                                  new Email.Header {Key = "b", Value = "B"}
                                               }
                             };
 

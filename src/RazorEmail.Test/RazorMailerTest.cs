@@ -6,21 +6,20 @@ using System.Net.Mime;
 using System.Xml.Serialization;
 using NUnit.Framework;
 
-namespace RazorMail.Test
+namespace RazorEmail.Test
 {
     [TestFixture]
     public class RazorMailerTest
     {
         public class TestModel { public string Link; }
-        public TestModel DefaultModel = new TestModel(){ Link = "http://testing.com" };
+        public TestModel DefaultModel = new TestModel { Link = "http://testing.com" };
 
         [Test]
         public void ctor_should_valid_dir_exists()
         {
             Assert.Throws<ArgumentException>(() =>
                                                  {
-
-                                                     var mailer = new RazorMailer("doesn't exist", null);
+                                                     new RazorMailer("doesn't exist");
                                                  });
         }
 
@@ -28,22 +27,14 @@ namespace RazorMail.Test
         public void Render_should_throw_if_null_template_name_passed()
         {
             var mailer = CreateTarget();
-            Assert.Throws<ArgumentNullException>(() =>
-                                                     {
-                                                         mailer.Create(null, new object(), "test@test.com");
-
-                                                     });
+            Assert.Throws<ArgumentNullException>(() => mailer.Create(null, new object(), "test@test.com"));
         }
 
         [Test]
         public void Render_should_throw_if_template_not_found()
         {
             var mailer = CreateTarget();
-            Assert.Throws<ArgumentException>(() =>
-                                                 {
-                                                     mailer.Create(@"not found", new object(), "test@test.com");
-
-                                                 });
+            Assert.Throws<ArgumentException>(() => mailer.Create(@"not found", new object(), "test@test.com"));
         }
 
         [Test]
@@ -61,7 +52,7 @@ http://testing.com
 
 Regards,
 
-The cool z's",
+The cool z's".CleanUpNewLines(),
                 result.Replace("\r\n", "\n"));
 
         }
@@ -99,23 +90,23 @@ body http://testing.com
         [Test, Explicit]
         public void GenerateXml()
         {
-            Email template = new Email()
-                                         {
+            var template = new Email
+                               {
                                              From = new Email.Address
                                              {
                                                  Email = "test@test.com",
                                                  Name = "Tester",
                                              },
-                                             Bcc = new Email.Address[1] { new Email.Address()
-                                                                                      {
+                                             Bcc = new[] { new Email.Address
+                                                               {
                                                                                           Email = "test@bcc.com",
                                                                                           Name = "spooky"
                                                                                       }},
                                              Subject = "The subject line",
-                                             Views = new Email.View[1]
+                                             Views = new[]
                                                          {
-                                                             new Email.View()
-                                                                {
+                                                             new Email.View
+                                                                 {
                                                                      MediaType = "text/plain",
                                                                      Content = "This is a test template",
                                                                 }
@@ -123,13 +114,13 @@ body http://testing.com
                                          };
 
             var serializer = new XmlSerializer(typeof(Email));
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 serializer.Serialize(ms, template);
 
                 ms.Position = 0;
 
-                StreamReader reader = new StreamReader(ms);
+                var reader = new StreamReader(ms);
 
                 Console.WriteLine(reader.ReadToEnd());
 
@@ -209,7 +200,7 @@ body http://testing.com
 
         private string GetViewContent(MailMessage message, string mediaType)
         {
-            var view = message.AlternateViews.Where(x => x.ContentType.MediaType == mediaType).FirstOrDefault();
+            var view = message.AlternateViews.FirstOrDefault(x => x.ContentType.MediaType == mediaType);
 
             if (view == null)
                 return null;
@@ -243,8 +234,8 @@ Regards,
 The cool z's
 
 </body>
-</html>",
-                result.Replace("\r\n", "\n"));
+</html>".CleanUpNewLines(),
+                result.CleanUpNewLines());
 
         }
 

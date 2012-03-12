@@ -5,13 +5,13 @@ using System.IO;
 using System.Net.Mime;
 using System.Xml.Serialization;
 
-namespace RazorMail
+namespace RazorEmail
 {
     public class RazorMailer : IDisposable
     {
         private static readonly RazorMailer _staticMailer;
-        private IRazorEngine razorEngine;
-        private string baseDir;
+        private readonly IRazorEngine razorEngine;
+        private readonly string baseDir;
 
         static RazorMailer()
         {
@@ -24,7 +24,7 @@ namespace RazorMail
         public RazorMailer(string baseDir, IRazorEngine razorEngine = null)
         {
             this.baseDir = baseDir;
-            this.razorEngine = razorEngine ?? new global::RazorMail.RazorEngine(baseDir);
+            this.razorEngine = razorEngine ?? new RazorEngine(baseDir);
         }
 
         public static Email Build<T>(string templateName, T model, string toAddress, string toDisplayname = null)
@@ -41,7 +41,7 @@ namespace RazorMail
 
             var email = CreateFromFile(templateName);
             
-            var toAddressList = new List<Email.Address>() {new Email.Address() {Email = toAddress, Name = toDisplayName}};
+            var toAddressList = new List<Email.Address> {new Email.Address {Email = toAddress, Name = toDisplayName}};
 
             if(email.To != null)
                 toAddressList.AddRange(email.To);
@@ -78,6 +78,9 @@ namespace RazorMail
             using (Stream stream = File.OpenRead(templateFilename))
             {
                 template = serializer.Deserialize(stream) as Email;
+
+                if(template == null)
+                    throw new ArgumentException(String.Format("Could not deserialize template file: {0}",templateFilename));
 
                 var defaultTextFilename = templateName + ".text_plain.cshtml";
                 var defaultHtmlFilename = templateName + ".text_html.cshtml";

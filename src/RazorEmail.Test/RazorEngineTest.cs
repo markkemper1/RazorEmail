@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 
-namespace RazorMail.Test
+namespace RazorEmail.Test
 {
     [TestFixture]
     public class RazorEngineTest
@@ -9,7 +9,7 @@ namespace RazorMail.Test
         [Test]
         public void template_with_layout_should_render_layout_then_content()
         {
-            var engine = new global::RazorMail.RazorEngine(@"..\..\Templates");
+            var engine = new RazorEngine(@"..\..\Templates");
 
             var result = engine.RenderTempateToString("test_master_content", (object) null);
 

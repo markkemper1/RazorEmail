@@ -12,7 +12,7 @@ using RazorEngine.Configuration;
 using RazorEngine.Templating;
 using RazorEngine.Text;
 
-namespace RazorMail
+namespace RazorEmail
 {
     public class EmailTemplateConfiguration : ITemplateServiceConfiguration
     {
@@ -48,9 +48,9 @@ namespace RazorMail
 
         public T GetSection<T>(string sectionXml) where T: new()
         {
-            T section = new T();
+            var section = new T();
             using (var stringReader = new StringReader(sectionXml))
-            using (XmlReader reader = XmlReader.Create(stringReader, new XmlReaderSettings() { CloseInput = true }))
+            using (XmlReader reader = XmlReader.Create(stringReader, new XmlReaderSettings { CloseInput = true }))
             {
                 reader.Read();
                 section.GetType().GetMethod("DeserializeElement", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(section, new object[] { reader, true });
@@ -79,7 +79,7 @@ namespace RazorMail
         /// <summary>
         /// Gets the set of code inspectors.
         /// </summary>
-        public IList<ICodeInspector> CodeInspectors { get { return (IList<ICodeInspector>)innerConfig.CodeInspectors; } }
+        public IList<ICodeInspector> CodeInspectors { get { return innerConfig.CodeInspectors; } }
 
         /// <summary>
         /// Gets or sets the compiler service factory.

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using RazorEngine.Templating;
 
-namespace RazorMail
+namespace RazorEmail
 {
     public class TemplateResolver : ITemplateResolver
     {
@@ -14,7 +14,7 @@ namespace RazorMail
             this.baseDir = baseDir;
 
             if (!Directory.Exists(baseDir))
-                throw new ArgumentException(String.Format("The template directory does not exist! ", baseDir)); 
+                throw new ArgumentException(String.Format("The template directory does not exist! - {0} ", baseDir)); 
         }
 
         public string Resolve(string name)

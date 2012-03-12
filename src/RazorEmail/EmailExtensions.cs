@@ -3,13 +3,13 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 
-namespace RazorMail
+namespace RazorEmail
 {
     public static class EmailExtensions
     {
         public static Email WithHeader(this Email email, string key, string value)
         {
-            email.Headers = email.Headers.Union(new[] {new Email.Header() {Key = key, Value = value}}).ToArray();
+            email.Headers = email.Headers.Union(new[] {new Email.Header {Key = key, Value = value}}).ToArray();
             return email;
         }
 
@@ -66,28 +66,45 @@ namespace RazorMail
 
         public static void Send(this MailMessage message)
         {
-            var client = new SmtpClient();
-            client.Send(message);
+            using (var client = NewClient())
+            {
+                client.Send(message);
+            }
         }
 
         public static void SendAsync(this MailMessage message)
         {
-            var client = new SmtpClient();
-
-            client.SendAsync(message, String.Empty);
+            message.SendAsync(x => { }, 0);
         }
 
         public static void SendAsync<T>(this MailMessage message, Action<T> action, T actionStateArgument)
         {
-            var client= new SmtpClient();
-            client.SendCompleted += (sender, args) => action(actionStateArgument);
-            client.SendAsync(message, actionStateArgument);
+            message.SendAsync((arg, m) => action(arg), actionStateArgument);
         }
 
         public static void SendAsync<T>(this MailMessage message, Action<T, MailMessage> action, T actionStateArgument)
         {
-            var args = Tuple.Create(actionStateArgument, message);
-            SendAsync(message, x=> action(actionStateArgument, message), args);
+            var client = NewClient();
+
+            client.SendCompleted += (sender, args) =>
+            {
+                action(actionStateArgument, message);
+                client.Dispose();
+            };
+            client.SendAsync(message, actionStateArgument);
+        }
+
+        internal static SmtpClient NewClient()
+        { 
+            var client = new SmtpClient();
+            /* Disposing with a blank host causes an exception */
+            if( 
+                (client.DeliveryMethod == SmtpDeliveryMethod.SpecifiedPickupDirectory
+                || client.DeliveryMethod == SmtpDeliveryMethod.PickupDirectoryFromIis
+                )
+                && String.IsNullOrEmpty(client.Host))
+                client.Host = "localhost";
+            return client;
         }
     }
 }

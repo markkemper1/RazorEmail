@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace RazorMail
+namespace RazorEmail
 {
     [Serializable, XmlRoot("email")]
     public class Email
