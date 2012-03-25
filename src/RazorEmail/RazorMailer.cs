@@ -15,7 +15,7 @@ namespace RazorEmail
 
         static RazorMailer()
         {
-            var baseDir = ConfigurationManager.AppSettings["razor.mail.base.dir"];
+            var baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
 
             if(baseDir != null)
                 _staticMailer = new RazorMailer(baseDir);
@@ -24,7 +24,10 @@ namespace RazorEmail
         public RazorMailer(string baseDir = null, IRazorEngine razorEngine = null)
         {
             if(baseDir == null)
-                  baseDir = ConfigurationManager.AppSettings["razor.mail.base.dir"];
+                  baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
+
+            if(baseDir == null)
+                throw new ApplicationException("You must supply an baseDir or have a application settings called 'razor.email.base.dir");
 
             this.baseDir = baseDir;
             this.razorEngine = razorEngine ?? new RazorEngine(baseDir);
@@ -33,7 +36,7 @@ namespace RazorEmail
         public static Email Build<T>(string templateName, T model, string toAddress = null, string toDisplayname = null)
         {
             if (_staticMailer == null)
-                throw new ApplicationException("You must define the razor.mailer.base.dir appSettings in order to use the static method");
+                throw new ApplicationException("You must define the razor.email.base.dir appSettings in order to use the static method");
 
             return _staticMailer.Create(templateName, model, toAddress, toDisplayname);
         }
