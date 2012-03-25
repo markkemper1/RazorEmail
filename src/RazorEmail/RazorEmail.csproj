@@ -55,6 +55,7 @@
     <Compile Include="Email.cs" />
     <Compile Include="EmailExtensions.cs" />
     <Compile Include="EmailTemplateConfiguration.cs" />
+    <Compile Include="IEmailSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RazorEngine.cs" />
     <Compile Include="RazorMailer.cs" />

@@ -13,30 +13,40 @@ namespace RazorEmail
             return email;
         }
 
+        public static MailMessage ToMailMessage(this Email email, Action<Email> action)
+        {
+            action(email);
+           return  email.ToMailMessage();
+        }
+
         public static MailMessage ToMailMessage(this Email email)
         {
             var message = new MailMessage();
 
-            if(email.From != null)
-                message.From = new MailAddress(email.From.Email, email.From.Name);
+            if (email.From != null)
+            {
+                message.From = email.From.ToMailAddress("From address is null");
+            }
 
             if (email.To != null)
             {
                 foreach (var to in email.To)
-                    message.To.Add(new MailAddress(to.Email, to.Name));
+                {
+                    message.To.Add(to.ToMailAddress("To address is null"));
+                }
             }
 
             if (email.Bcc != null)
             {
                 foreach (var bcc in email.Bcc)
-                    message.Bcc.Add(new MailAddress(bcc.Email, bcc.Name));
+                    message.Bcc.Add(bcc.ToMailAddress("Bcc address is null"));
             }
 
             if (email.CC != null)
             {
                 foreach (var cc in email.CC)
                 {
-                    message.CC.Add(new MailAddress(cc.Email, cc.Name));
+                    message.CC.Add(cc.ToMailAddress("CC address is null"));
                 }
             }
 
@@ -62,6 +72,13 @@ namespace RazorEmail
             }
 
             return message;
+        }
+
+        public static void Send(this MailMessage message, IEmailSender sender)
+        {
+            if (message == null) throw new ArgumentNullException("message");
+            if (sender == null) throw new ArgumentNullException("sender");
+            sender.Send(message);
         }
 
         public static void Send(this MailMessage message)

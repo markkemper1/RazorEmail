@@ -1,4 +1,5 @@
 using System;
+using System.Net.Mail;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -45,6 +46,14 @@ namespace RazorEmail
 
             [XmlAttribute("display")]
             public string Name { get; set; }
+
+            public MailAddress ToMailAddress(string errorMessage = null)
+            {
+                if(String.IsNullOrEmpty(this.Email))
+                    throw new InvalidOperationException("Email address cannot be null. " + errorMessage);
+
+                return new MailAddress(this.Email,this.Name);
+            }
         }
 
         public class View 
