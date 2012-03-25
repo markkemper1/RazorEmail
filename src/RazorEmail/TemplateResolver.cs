@@ -11,10 +11,11 @@ namespace RazorEmail
         public TemplateResolver(string baseDir)
         {
             if (baseDir == null) throw new ArgumentNullException("baseDir");
+
             this.baseDir = baseDir;
 
             if (!Directory.Exists(baseDir))
-                throw new ArgumentException(String.Format("The template directory does not exist! - {0} ", baseDir)); 
+                throw new ArgumentException(String.Format("The template directory does not exist! - {0} , Full path: {1}", baseDir, Path.GetFullPath(baseDir))); 
         }
 
         public string Resolve(string name)

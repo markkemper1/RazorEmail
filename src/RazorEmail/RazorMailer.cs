@@ -34,6 +34,9 @@ namespace RazorEmail
             if(baseDir == null)
                 throw new ApplicationException("You must supply an baseDir or have a application settings called 'razor.email.base.dir'");
 
+            if (baseDir.Contains("|DataDirectory|"))
+                baseDir = baseDir.Replace("|DataDirectory|", (string)AppDomain.CurrentDomain.GetData("DataDirectory"));
+
             this.baseDir = baseDir;
             this.razorEngine = razorEngine ?? new RazorEngine(baseDir);
         }
