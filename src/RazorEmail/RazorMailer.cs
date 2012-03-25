@@ -38,7 +38,7 @@ namespace RazorEmail
             return _staticMailer.Create(templateName, model, toAddress, toDisplayname);
         }
 
-        public Email Create<T>(string templateName, T model, string toAddress =null, string toDisplayName = null)
+        public virtual Email Create<T>(string templateName, T model, string toAddress =null, string toDisplayName = null)
         {
             if (templateName == null) throw new ArgumentNullException("templateName");
 
