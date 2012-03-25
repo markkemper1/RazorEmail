@@ -21,8 +21,11 @@ namespace RazorEmail
                 _staticMailer = new RazorMailer(baseDir);
         }
 
-        public RazorMailer(string baseDir, IRazorEngine razorEngine = null)
+        public RazorMailer(string baseDir = null, IRazorEngine razorEngine = null)
         {
+            if(baseDir == null)
+                  baseDir = ConfigurationManager.AppSettings["razor.mail.base.dir"];
+
             this.baseDir = baseDir;
             this.razorEngine = razorEngine ?? new RazorEngine(baseDir);
         }
