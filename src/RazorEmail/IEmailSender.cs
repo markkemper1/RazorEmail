@@ -12,8 +12,21 @@ namespace RazorEmail
     {
         public void Send(MailMessage message)
         {
-            using(var client = new SmtpClient())
+            using(var client = NewClient())
                 client.Send(message);
+        }
+
+        internal static SmtpClient NewClient()
+        {
+            var client = new SmtpClient();
+            /* Disposing with a blank host causes an exception */
+            if (
+                (client.DeliveryMethod == SmtpDeliveryMethod.SpecifiedPickupDirectory
+                || client.DeliveryMethod == SmtpDeliveryMethod.PickupDirectoryFromIis
+                )
+                && String.IsNullOrEmpty(client.Host))
+                client.Host = "localhost";
+            return client;
         }
     }
 }

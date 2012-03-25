@@ -83,7 +83,7 @@ namespace RazorEmail
 
         public static void Send(this MailMessage message)
         {
-            using (var client = NewClient())
+            using (var client = SimpleSmtpSender.NewClient())
             {
                 client.Send(message);
             }
@@ -101,7 +101,7 @@ namespace RazorEmail
 
         public static void SendAsync<T>(this MailMessage message, Action<T, MailMessage> action, T actionStateArgument)
         {
-            var client = NewClient();
+            var client = SimpleSmtpSender.NewClient();
 
             client.SendCompleted += (sender, args) =>
             {
@@ -111,17 +111,6 @@ namespace RazorEmail
             client.SendAsync(message, actionStateArgument);
         }
 
-        internal static SmtpClient NewClient()
-        { 
-            var client = new SmtpClient();
-            /* Disposing with a blank host causes an exception */
-            if( 
-                (client.DeliveryMethod == SmtpDeliveryMethod.SpecifiedPickupDirectory
-                || client.DeliveryMethod == SmtpDeliveryMethod.PickupDirectoryFromIis
-                )
-                && String.IsNullOrEmpty(client.Host))
-                client.Host = "localhost";
-            return client;
-        }
+        
     }
 }
