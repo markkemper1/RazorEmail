@@ -21,13 +21,18 @@ namespace RazorEmail
                 _staticMailer = new RazorMailer(baseDir);
         }
 
+        public RazorMailer()
+            :this(null,null)
+        {
+        }
+
         public RazorMailer(string baseDir = null, IRazorEngine razorEngine = null)
         {
             if(baseDir == null)
                   baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
 
             if(baseDir == null)
-                throw new ApplicationException("You must supply an baseDir or have a application settings called 'razor.email.base.dir");
+                throw new ApplicationException("You must supply an baseDir or have a application settings called 'razor.email.base.dir'");
 
             this.baseDir = baseDir;
             this.razorEngine = razorEngine ?? new RazorEngine(baseDir);
