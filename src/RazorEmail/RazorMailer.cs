@@ -27,7 +27,7 @@ namespace RazorEmail
             this.razorEngine = razorEngine ?? new RazorEngine(baseDir);
         }
 
-        public static Email Build<T>(string templateName, T model, string toAddress, string toDisplayname = null)
+        public static Email Build<T>(string templateName, T model, string toAddress = null, string toDisplayname = null)
         {
             if (_staticMailer == null)
                 throw new ApplicationException("You must define the razor.mailer.base.dir appSettings in order to use the static method");
@@ -35,13 +35,16 @@ namespace RazorEmail
             return _staticMailer.Create(templateName, model, toAddress, toDisplayname);
         }
 
-        public Email Create<T>(string templateName, T model, string toAddress, string toDisplayName = null)
+        public Email Create<T>(string templateName, T model, string toAddress =null, string toDisplayName = null)
         {
             if (templateName == null) throw new ArgumentNullException("templateName");
 
             var email = CreateFromFile(templateName);
-            
-            var toAddressList = new List<Email.Address> {new Email.Address {Email = toAddress, Name = toDisplayName}};
+
+            var toAddressList = new List<Email.Address>();
+
+            if(toAddress != null)
+                toAddressList.Add(new Email.Address {Email = toAddress, Name = toDisplayName});
 
             if(email.To != null)
                 toAddressList.AddRange(email.To);
