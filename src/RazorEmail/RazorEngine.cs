@@ -53,7 +53,9 @@ namespace RazorEmail
 
         public string RenderTempateToString<T>(string templateName, T model)
         {
+            if (templateName == null) throw new ArgumentNullException("templateName");
             var template = templateService.Resolve(templateName, model);
+            if (template == null) throw new ArgumentNullException("templateName", "Failed to resolve a template: " + templateName);
             return template.Run(new ExecuteContext());
         }
 
