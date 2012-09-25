@@ -2,21 +2,41 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 
-    <Target Name="Nuget" Inputs="@(ProjectsToNuGet)"  Outputs="%(Identity).Dummy"  >
-        <Message Text="@(ProjectsToNuGet)" />
-        <Exec Command="$(NugetExe) pack @(ProjectsToNuGet) -Build -OutputDirectory $(BuildOutputDir)"/>
-    </Target>
+  
 
-    <Target Name="NugetPush" >
-        <ItemGroup>
-            <PackageFile Include="..\bin\*.nupkg" />
-        </ItemGroup>
-        <Message Text="PackgeFile: @(PackageFile)" />
-        <Exec Command="$(NugetExe) push %(PackageFile.Identity)"  ContinueOnError="true"/>
-    </Target>
+  <Target Name="Nuget" Inputs="@(ProjectsToNuGet)"  Outputs="%(Identity).Dummy"  >
 
-    <Target Name="NugetPackageAndPush" DependsOnTargets="Nuget;NugetPush">
-        <Message Text="Creating Nuget, Trying to push "/>
-    </Target>
+    <ItemGroup>
+      <PackageFile Include=" $(BuildOutputDir)\$(ProjectName)*.nupkg" />
+    </ItemGroup>
+
+    <Delete Files="@(PackageFile)" ContinueOnError="true" />
+    
+    <Message Text="@(ProjectsToNuGet)" />
+    <Exec Command="$(NugetExe) pack @(ProjectsToNuGet) -Build -OutputDirectory $(BuildOutputDir)"/>
+
+
+    <ItemGroup>
+      <PackageFile Include=" $(BuildOutputDir)\$(ProjectName)*.nupkg" />
+    </ItemGroup>
+
+    <Message Text="NUGET_REPOSITORY: $(NUGET_REPOSITORY) - $(BuildOutputDir)\$(ProjectName)*.nupkg" Importance="high" />
+
+    <Copy SourceFiles="@(PackageFile)" DestinationFolder="$(NUGET_REPOSITORY)" Condition="$(NUGET_REPOSITORY) != ''  "    />
+
+
+  </Target>
+
+  <Target Name="NugetPush" >
+    <ItemGroup>
+      <PackageFile Include="..\bin\*.nupkg" />
+    </ItemGroup>
+    <Message Text="PackgeFile: @(PackageFile)" />
+    <Exec Command="$(NugetExe) push %(PackageFile.Identity)"  ContinueOnError="true"/>
+  </Target>
+
+  <Target Name="NugetPackageAndPush" DependsOnTargets="Nuget;NugetPush">
+    <Message Text="Creating Nuget, Trying to push "/>
+  </Target>
 
 </Project>

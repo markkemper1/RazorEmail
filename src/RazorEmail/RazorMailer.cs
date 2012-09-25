@@ -9,7 +9,6 @@ namespace RazorEmail
 {
     public class RazorMailer : IDisposable
     {
-        private static readonly RazorMailer _staticMailer;
         private readonly IRazorEngine razorEngine;
         private readonly string baseDir;
 
@@ -18,7 +17,7 @@ namespace RazorEmail
             var baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
 
             if(baseDir != null)
-                _staticMailer = new RazorMailer(baseDir);
+                new RazorMailer(baseDir);
         }
 
         public RazorMailer()
@@ -43,10 +42,8 @@ namespace RazorEmail
 
         public static Email Build<T>(string templateName, T model, string toAddress = null, string toDisplayname = null)
         {
-            if (_staticMailer == null)
-                throw new ApplicationException("You must define the razor.email.base.dir appSettings in order to use the static method");
-
-            return _staticMailer.Create(templateName, model, toAddress, toDisplayname);
+            var mailer = new RazorMailer();
+            return mailer.Create(templateName, model, toAddress, toDisplayname);
         }
 
         public virtual Email Create<T>(string templateName, T model, string toAddress =null, string toDisplayName = null)
