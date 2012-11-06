@@ -97,12 +97,10 @@ body http://testing.com
             watch.Start();
             razorMailer.Create("PlainTextInline", DefaultModel, "test@test.com").ToMailMessage();
             watch.Stop();
-            
             Console.WriteLine(watch.ElapsedMilliseconds);
-
             watch.Reset();
             watch.Start();
-            for(int i=0; i < 10; i++)
+            for(int i=0; i < 20; i++)
                  razorMailer.Create("PlainTextInline", DefaultModel, "test@test.com").ToMailMessage();
             watch.Stop();
             

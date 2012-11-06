@@ -4,28 +4,20 @@ using System.Configuration;
 using System.IO;
 using System.Net.Mime;
 using System.Xml.Serialization;
+using RazorEngine;
 
 namespace RazorEmail
 {
-    public class RazorMailer : IDisposable
+    public class RazorMailer 
     {
-        private readonly IRazorEngine razorEngine;
         private readonly string baseDir;
 
-        static RazorMailer()
-        {
-            var baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
-
-            if(baseDir != null)
-                new RazorMailer(baseDir);
-        }
-
         public RazorMailer()
-            :this(null,null)
+            :this(null)
         {
         }
 
-        public RazorMailer(string baseDir = null, IRazorEngine razorEngine = null)
+        public RazorMailer(string baseDir = null)
         {
             if(baseDir == null)
                   baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
@@ -37,7 +29,9 @@ namespace RazorEmail
                 baseDir = baseDir.Replace("|DataDirectory|", (string)AppDomain.CurrentDomain.GetData("DataDirectory"));
 
             this.baseDir = baseDir;
-            this.razorEngine = razorEngine ?? new RazorEngine(baseDir);
+
+            if(!Directory.Exists(baseDir))
+                throw new ArgumentException("The baseDir supplied doesn't exist: " + baseDir);
         }
 
         public static Email Build<T>(string templateName, T model, string toAddress = null, string toDisplayname = null)
@@ -62,20 +56,36 @@ namespace RazorEmail
 
             email.To = toAddressList.ToArray();
 
-            email.Subject = razorEngine.RenderContentToString(email.Subject, model);
+            email.Subject = Razor.Parse(email.Subject, model, email.Subject);// razorEngine.RenderContentToString(email.Subject, model);
 
             if(email.Subject.Contains("\n")) throw new ApplicationException("The subject line cannot contain any newline characters");
 
             foreach (var view in email.Views)
             {
                 var viewTemplateName = templateName + "." + view.MediaType.Replace('/', '_');
-                bool templateExists = razorEngine.DoesTemplateExist(viewTemplateName, model);
+
+                var fileContent = Resolve(viewTemplateName);
+
+                bool templateExists = fileContent != null;
                
-                view.Content = templateExists ? razorEngine.RenderTempateToString(viewTemplateName, model) :
-                                                razorEngine.RenderContentToString(view.Content, model)  ;
+                view.Content = templateExists ?  Razor.Parse(fileContent, model, viewTemplateName) :
+                                                Razor.Parse(view.Content, model, viewTemplateName); //razorEngine.RenderContentToString(view.Content, model);
             }
 
             return email;
+        }
+
+        public string Resolve(string name)
+        {
+            var path = Path.Combine(baseDir, name);
+
+            if (File.Exists(path))
+                return File.ReadAllText(path);
+
+            if (File.Exists(path + ".cshtml"))
+                return File.ReadAllText(path + ".cshtml");
+
+            return null;
         }
 
         private Email CreateFromFile(string templateName)
@@ -125,9 +135,6 @@ namespace RazorEmail
             return template;
         }
 
-        public void Dispose()
-        {
-            this.razorEngine.Dispose();
-        }
+        
     }
 }

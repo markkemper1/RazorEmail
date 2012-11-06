@@ -57,9 +57,7 @@
     <Compile Include="EmailTemplateConfiguration.cs" />
     <Compile Include="IEmailSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RazorEngine.cs" />
     <Compile Include="RazorMailer.cs" />
-    <Compile Include="TemplateResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="RazorEmail.nuspec" />
