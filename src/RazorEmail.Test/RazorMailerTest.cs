@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -85,6 +86,27 @@ body http://testing.com".Replace("\r\n", "\n"), result);
        is the
 body http://testing.com
 </html>".Replace("\r\n", "\n"), result);
+        }
+
+        [Test, Explicit]
+        public void Speed_test()
+        {
+            var razorMailer = this.CreateTarget();
+
+            var watch = new Stopwatch();
+            watch.Start();
+            razorMailer.Create("PlainTextInline", DefaultModel, "test@test.com").ToMailMessage();
+            watch.Stop();
+            
+            Console.WriteLine(watch.ElapsedMilliseconds);
+
+            watch.Reset();
+            watch.Start();
+            for(int i=0; i < 10; i++)
+                 razorMailer.Create("PlainTextInline", DefaultModel, "test@test.com").ToMailMessage();
+            watch.Stop();
+            
+            Console.WriteLine(watch.ElapsedMilliseconds);
         }
 
         [Test, Explicit]
