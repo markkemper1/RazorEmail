@@ -20,33 +20,34 @@ namespace RazorEmail
 
         static RazorMailer()
         {
-            var baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
-
-            if (baseDir == null)
-                throw new ApplicationException("You must supply an baseDir or have a application settings called 'razor.email.base.dir'");
+            var baseDir = GetBaseDir();
 
             Razor.SetTemplateService(new TemplateService(new EmailTemplateConfiguration(baseDir)
                                                              {
                                                                  Resolver = new TemplateResolver(baseDir)
                                                              }));
-            
         }
 
-        public RazorMailer(string baseDir = null)
+        private static string GetBaseDir(string baseDir = null)
         {
-            if(baseDir == null)
-                  baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
+             if(baseDir == null)
+                baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
 
-            if(baseDir == null)
-                throw new ApplicationException("You must supply an baseDir or have a application settings called 'razor.email.base.dir'");
+            if (baseDir == null)
+                throw new ApplicationException("You must supply have a AppSetting called 'razor.email.base.dir'");
 
             if (baseDir.Contains("|DataDirectory|"))
                 baseDir = baseDir.Replace("|DataDirectory|", (string)AppDomain.CurrentDomain.GetData("DataDirectory"));
 
-            this.baseDir = baseDir;
+            return baseDir;
+        }
 
-            if(!Directory.Exists(baseDir))
-                throw new ArgumentException("The baseDir supplied doesn't exist: " + baseDir);
+        public RazorMailer(string baseDir = null)
+        {
+            this.baseDir = GetBaseDir(baseDir); ;
+
+            if(!Directory.Exists(this.baseDir))
+                throw new ArgumentException("The baseDir supplied doesn't exist: " + this.baseDir);
         }
 
         public static Email Build<T>(string templateName, T model, string toAddress = null, string toDisplayname = null)
