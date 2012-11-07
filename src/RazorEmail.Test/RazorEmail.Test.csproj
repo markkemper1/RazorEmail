@@ -60,7 +60,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Templates\test_master_content.cshtml" />
+    <None Include="Templates\test_master_content.text_html.cshtml" />
     <None Include="Templates\ForgotPassword.text_html.cshtml" />
     <None Include="Templates\razor.config" />
     <None Include="Templates\test_master_content_layout.cshtml" />
@@ -68,6 +68,7 @@
   <ItemGroup>
     <Content Include="Templates\Bcc.xml" />
     <Content Include="Templates\Cc.xml" />
+    <Content Include="Templates\test_master_content.xml" />
     <Content Include="Templates\multpleToAddresses.xml" />
     <Content Include="Templates\HtmlTextInline.xml" />
     <Content Include="Templates\PlainTextInline.xml" />

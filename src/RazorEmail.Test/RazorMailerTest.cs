@@ -148,6 +148,18 @@ body http://testing.com
 
         }
 
+
+        [Test]
+        public void should_render_template_with_layout()
+        {
+            var razorMailer = this.CreateTarget();
+
+            var result = razorMailer.Create("test_master_content", DefaultModel, "test@test.com");
+
+            Assert.That(result.Views.First().Content, Contains.Substring("THIS_IS_IN_THE_LAYOUT"));
+
+        }
+
         [Test]
         public void Render_should_preserve_bcc_in_email()
         {

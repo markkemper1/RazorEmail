@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.Mime;
 using System.Xml.Serialization;
 using RazorEngine;
+using RazorEngine.Templating;
 
 namespace RazorEmail
 {
@@ -15,6 +16,20 @@ namespace RazorEmail
         public RazorMailer()
             :this(null)
         {
+        }
+
+        static RazorMailer()
+        {
+            var baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
+
+            if (baseDir == null)
+                throw new ApplicationException("You must supply an baseDir or have a application settings called 'razor.email.base.dir'");
+
+            Razor.SetTemplateService(new TemplateService(new EmailTemplateConfiguration(baseDir)
+                                                             {
+                                                                 Resolver = new TemplateResolver(baseDir)
+                                                             }));
+            
         }
 
         public RazorMailer(string baseDir = null)
