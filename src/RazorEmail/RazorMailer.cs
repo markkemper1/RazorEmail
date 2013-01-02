@@ -39,6 +39,9 @@ namespace RazorEmail
             if (baseDir.Contains("|DataDirectory|"))
                 baseDir = baseDir.Replace("|DataDirectory|", (string)AppDomain.CurrentDomain.GetData("DataDirectory"));
 
+            if (baseDir.Contains("~"))
+                baseDir = System.Web.Hosting.HostingEnvironment.MapPath(baseDir);
+
             return baseDir;
         }
 
