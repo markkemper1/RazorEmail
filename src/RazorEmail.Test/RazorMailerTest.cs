@@ -219,7 +219,16 @@ body http://testing.com
             var message = CreateForgotPasswordResult();
 
             Assert.AreEqual("noreply@jobping.com", message.From.Email);
-            Assert.AreEqual("jobping", message.From.Name);
+            Assert.AreEqual("noreply", message.From.Name);
+        }
+
+        [Test]
+        public void Render_should_set_the_no_reply_address()
+        {
+            var message = CreateForgotPasswordResult();
+
+            Assert.AreEqual("contact@jobping.com", message.ReplyTo.Email);
+            Assert.AreEqual("jobping", message.ReplyTo.Name);
         }
 
         [Test]
@@ -269,6 +278,12 @@ The cool z's
 </html>".CleanUpNewLines(),
                 result.CleanUpNewLines());
 
+        }
+
+        [Test]
+        public void should_send_forgot_passowrd()
+        {
+            this.CreateForgotPasswordResult().ToMailMessage().Send();
         }
 
         private Email CreateForgotPasswordResult()

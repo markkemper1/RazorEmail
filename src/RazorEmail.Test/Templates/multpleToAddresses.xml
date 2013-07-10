@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <email>
     <subject>the inline text content</subject>
-    <from>noreply@jobping.com</from>
+    <from display="noreply">noreply@jobping.com</from>
+    <replyTo display="jobping">contact@jobping.com</replyTo>
     <to>
         <add display="visible person 1">test1@to.com</add>
         <add display="visible person 2">test2@to.com</add>

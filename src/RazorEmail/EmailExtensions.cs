@@ -36,6 +36,11 @@ namespace RazorEmail
                 }
             }
 
+            if (email.ReplyTo != null)
+            {
+                message.ReplyToList.Add(email.ReplyTo.ToMailAddress());
+            }
+            
             if (email.Bcc != null)
             {
                 foreach (var bcc in email.Bcc)

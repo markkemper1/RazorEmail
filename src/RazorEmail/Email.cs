@@ -14,6 +14,9 @@ namespace RazorEmail
         [XmlElement("from")]
         public Address From { get; set; }
 
+        [XmlElement("replyTo")]
+        public Address ReplyTo { get; set; }
+
         [XmlArray("views"), XmlArrayItem("add")]
         public View[] Views { get; set; }
 
