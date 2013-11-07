@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Net.Mime;
+using System.Reflection;
 using System.Xml.Serialization;
 using RazorEngine;
 using RazorEngine.Templating;
@@ -11,46 +12,24 @@ namespace RazorEmail
 {
     public class RazorMailer 
     {
-        private readonly string baseDir;
+	    private static TemplateResolver _resolver;
 
-        public RazorMailer()
-            :this(null)
-        {
-        }
 
         static RazorMailer()
         {
-            var baseDir = GetBaseDir();
+	        _resolver = new TemplateResolver(); 
 
-            Razor.SetTemplateService(new TemplateService(new EmailTemplateConfiguration(baseDir)
+			Razor.SetTemplateService(new TemplateService(new EmailTemplateConfiguration(_resolver.BaseDir)
                                                              {
-                                                                 Resolver = new TemplateResolver(baseDir)
+                                                                 Resolver = _resolver
                                                              }));
-        }
 
-        private static string GetBaseDir(string baseDir = null)
-        {
-             if(baseDir == null)
-                baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
 
-            if (baseDir == null)
-                throw new ApplicationException("You must supply have a AppSetting called 'razor.email.base.dir'");
 
-            if (baseDir.Contains("|DataDirectory|"))
-                baseDir = baseDir.Replace("|DataDirectory|", (string)AppDomain.CurrentDomain.GetData("DataDirectory"));
 
-            if (baseDir.Contains("~"))
-                baseDir = System.Web.Hosting.HostingEnvironment.MapPath(baseDir);
 
-            return baseDir;
-        }
 
-        public RazorMailer(string baseDir = null)
-        {
-            this.baseDir = GetBaseDir(baseDir); ;
 
-            if(!Directory.Exists(this.baseDir))
-                throw new ArgumentException("The baseDir supplied doesn't exist: " + this.baseDir);
         }
 
         public static Email Build<T>(string templateName, T model, string toAddress = null, string toDisplayname = null)
@@ -83,9 +62,9 @@ namespace RazorEmail
             {
                 var viewTemplateName = templateName + "." + view.MediaType.Replace('/', '_');
 
-                var fileContent = Resolve(viewTemplateName);
+                var fileContent = _resolver.Resolve(viewTemplateName);
 
-                bool templateExists = fileContent != null;
+                var templateExists = fileContent != null;
                
                 view.Content = templateExists ?  Razor.Parse(fileContent, model, viewTemplateName) :
                                                 Razor.Parse(view.Content, model, viewTemplateName); //razorEngine.RenderContentToString(view.Content, model);
@@ -94,31 +73,22 @@ namespace RazorEmail
             return email;
         }
 
-        public string Resolve(string name)
-        {
-            var path = Path.Combine(baseDir, name);
 
-            if (File.Exists(path))
-                return File.ReadAllText(path);
 
-            if (File.Exists(path + ".cshtml"))
-                return File.ReadAllText(path + ".cshtml");
 
-            return null;
-        }
 
         private Email CreateFromFile(string templateName)
         {
-            var templateFilename = Path.Combine(baseDir, templateName + ".xml");
+            var templateFilename = templateName + ".xml";
 
-            if (!File.Exists(templateFilename))
-                throw new ArgumentException(String.Format("The template {0} could not be found here: {1}", templateName,
-                                                          templateFilename));
+			//if (!File.Exists(templateFilename))
+			//	throw new ArgumentException(String.Format("The template {0} could not be found here: {1}", templateName,
+			//											  templateFilename));
  
             var serializer = new XmlSerializer(typeof(Email));
             Email template;
 
-            using (Stream stream = File.OpenRead(templateFilename))
+            using (Stream stream = _resolver.GetStream(templateFilename))
             {
                 template = serializer.Deserialize(stream) as Email;
 
@@ -130,7 +100,7 @@ namespace RazorEmail
 
                 var defaultViews = new List<Email.View>();
 
-                if (template.Views == null && File.Exists(Path.Combine(baseDir, defaultTextFilename)))
+				if (template.Views == null && _resolver.GetStream(Path.Combine(_resolver.BaseDir, defaultTextFilename)) != null)
                 {
                     defaultViews.Add(new Email.View
                     {
@@ -138,7 +108,7 @@ namespace RazorEmail
                     });
                 }
 
-                if (template.Views == null && File.Exists(Path.Combine(baseDir, defaultHtmlFilename)))
+				if (template.Views == null && _resolver.GetStream(Path.Combine(_resolver.BaseDir, defaultHtmlFilename)) != null)
                 {
                     defaultViews.Add(new Email.View
                     {
