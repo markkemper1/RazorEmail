@@ -5,7 +5,7 @@
 	    <SolutionToCompile>..\src\RazorEmail.sln</SolutionToCompile>
          <Major>1</Major>
          <Minor>1</Minor>
-         <Build>0</Build>
+         <Build>1</Build>
          <Revision>0</Revision>
          <BuildOutputDir>..\bin</BuildOutputDir>
          <MSBuildMercurialPath>.</MSBuildMercurialPath>
