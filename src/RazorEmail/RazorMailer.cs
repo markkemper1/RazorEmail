@@ -24,7 +24,9 @@ namespace RazorEmail
 
         public RazorMailer(string baseDir = null)
         {
-            var defaultResolver = new DefaultResolver(baseDir ?? GetDefaultBaseDir());
+            baseDir = baseDir ?? GetDefaultBaseDir();
+
+            var defaultResolver = new DefaultResolver(baseDir);
 
             this.templateResolver = defaultResolver;
             this.emailResolver = defaultResolver;
