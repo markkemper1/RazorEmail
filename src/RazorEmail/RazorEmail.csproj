@@ -55,11 +55,16 @@
     </Compile>
     <Compile Include="Email.cs" />
     <Compile Include="EmailExtensions.cs" />
+    <Compile Include="EmailSenderAsyncExtensions.cs" />
     <Compile Include="EmailTemplateConfiguration.cs" />
+    <Compile Include="IEmailResolver.cs" />
     <Compile Include="IEmailSender.cs" />
+    <Compile Include="IEmailSenderAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RazorMailer.cs" />
-    <Compile Include="TemplateResolver.cs" />
+    <Compile Include="SimpleSmtpSender.cs" />
+    <Compile Include="DefaultResolver.cs" />
+    <Compile Include="SmtpClientExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="RazorEmail.nuspec" />

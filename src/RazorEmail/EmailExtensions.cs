@@ -88,10 +88,7 @@ namespace RazorEmail
 
         public static void Send(this MailMessage message)
         {
-            using (var client = SimpleSmtpSender.NewClient())
-            {
-                client.Send(message);
-            }
+            new SimpleSmtpSender().Send(message);
         }
 
         public static void SendAsync(this MailMessage message)
@@ -106,16 +103,14 @@ namespace RazorEmail
 
         public static void SendAsync<T>(this MailMessage message, Action<T, MailMessage> action, T actionStateArgument)
         {
-            var client = SimpleSmtpSender.NewClient();
+            var sender = new SimpleSmtpSender();
 
-            client.SendCompleted += (sender, args) =>
-            {
-                action(actionStateArgument, message);
-                client.Dispose();
-            };
-            client.SendAsync(message, actionStateArgument);
+            sender.SendAsync(message)
+                .ContinueWith(t =>
+                {
+                    if (t.IsCompleted)
+                        action(actionStateArgument, message);
+                }).Wait();
         }
-
-        
     }
 }
