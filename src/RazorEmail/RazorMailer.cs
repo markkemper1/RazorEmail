@@ -1,25 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using RazorEngine;
+using RazorEngine.Configuration;
 using RazorEngine.Templating;
 
 namespace RazorEmail
 {
-    public class RazorMailer 
+    public class RazorMailer
     {
         private readonly ITemplateResolver templateResolver;
         private readonly ITemplateService templateService;
         private readonly IEmailResolver emailResolver;
 
         public RazorMailer(ITemplateResolver templateResolver, IEmailResolver emailResolver)
+            : this(new TemplateServiceConfiguration { Resolver = templateResolver }, emailResolver)
         {
-            if(templateResolver == null)
-                throw new ArgumentNullException("templateResolver");
-            if(emailResolver == null)
+        }
+
+        public RazorMailer(ITemplateServiceConfiguration config, IEmailResolver emailResolver)
+        {
+            if (config == null)
+                throw new ArgumentNullException("config");
+            if (config.Resolver == null)
+                throw new ArgumentException("Custom configuration must specify a resolver");
+            if (emailResolver == null)
                 throw new ArgumentNullException("emailResolver");
 
-            this.templateResolver = templateResolver;
             this.emailResolver = emailResolver;
+            this.templateService = new TemplateService(config);
         }
 
         public RazorMailer(string baseDir = null)
@@ -38,7 +47,7 @@ namespace RazorEmail
 
         private static string GetDefaultBaseDir()
         {
-             string baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
+            string baseDir = ConfigurationManager.AppSettings["razor.email.base.dir"];
 
             if (baseDir == null)
                 throw new ApplicationException("You must supply have a AppSetting called 'razor.email.base.dir'");
@@ -51,33 +60,33 @@ namespace RazorEmail
 
             return baseDir;
         }
-        
+
         public static Email Build<T>(string templateName, T model, string toAddress = null, string toDisplayname = null)
         {
             var mailer = new RazorMailer();
             return mailer.Create(templateName, model, toAddress, toDisplayname);
         }
 
-        public virtual Email Create<T>(string templateName, T model, string toAddress =null, string toDisplayName = null)
+        public virtual Email Create<T>(string templateName, T model, string toAddress = null, string toDisplayName = null)
         {
-            if (templateName == null) 
+            if (templateName == null)
                 throw new ArgumentNullException("templateName");
 
             var email = emailResolver.Resolve(templateName);
 
             var toAddressList = new List<Email.Address>();
 
-            if(toAddress != null)
-                toAddressList.Add(new Email.Address {Email = toAddress, Name = toDisplayName});
+            if (toAddress != null)
+                toAddressList.Add(new Email.Address { Email = toAddress, Name = toDisplayName });
 
-            if(email.To != null)
+            if (email.To != null)
                 toAddressList.AddRange(email.To);
 
             email.To = toAddressList.ToArray();
 
-            email.Subject = templateService.Parse(email.Subject, model, email.Subject);// razorEngine.RenderContentToString(email.Subject, model);
+            email.Subject = templateService.Parse(email.Subject, model, null, email.Subject);// razorEngine.RenderContentToString(email.Subject, model);
 
-            if(email.Subject.Contains("\n")) throw new ApplicationException("The subject line cannot contain any newline characters");
+            if (email.Subject.Contains("\n")) throw new ApplicationException("The subject line cannot contain any newline characters");
 
             foreach (var view in email.Views)
             {
@@ -87,12 +96,12 @@ namespace RazorEmail
 
                 bool templateExists = fileContent != null;
 
-                view.Content = templateExists ? templateService.Parse(fileContent, model, viewTemplateName) :
-                                                templateService.Parse(view.Content, model, viewTemplateName); //razorEngine.RenderContentToString(view.Content, model);
+                view.Content = templateExists ? templateService.Parse(fileContent, model, null, viewTemplateName) :
+                                                templateService.Parse(view.Content, model, null, viewTemplateName); //razorEngine.RenderContentToString(view.Content, model);
             }
 
             return email;
         }
-        
+
     }
 }
