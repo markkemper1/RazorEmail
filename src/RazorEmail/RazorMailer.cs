@@ -28,6 +28,7 @@ namespace RazorEmail
                 throw new ArgumentNullException("emailResolver");
 
             this.emailResolver = emailResolver;
+            this.templateResolver = config.Resolver;
             this.templateService = new TemplateService(config);
         }
 
