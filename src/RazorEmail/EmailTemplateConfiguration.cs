@@ -41,6 +41,7 @@ namespace RazorEmail
                 Trace.WriteLine(String.Format("Razor email configuration file not found at: {0}. using defaults", configFile));
             }
 
+            innerConfig.BaseTemplateType = innerConfig.BaseTemplateType ?? typeof(RazorEmail.Templating.TemplateBase);
             innerConfig.Language = (config == null)
                                        ? Language.CSharp
                                        : config.DefaultLanguage;

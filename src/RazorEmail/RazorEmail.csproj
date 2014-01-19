@@ -66,6 +66,8 @@
     <Compile Include="SimpleSmtpSender.cs" />
     <Compile Include="DefaultResolver.cs" />
     <Compile Include="SmtpClientExtensions.cs" />
+    <Compile Include="Templating\TemplateBaseOfT.cs" />
+    <Compile Include="Templating\TemplateBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
