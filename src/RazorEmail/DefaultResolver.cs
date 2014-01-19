@@ -32,7 +32,7 @@ namespace RazorEmail
             if (File.Exists(path + ".cshtml"))
                 return File.ReadAllText(path + ".cshtml");
 
-            return null;
+            throw new ArgumentException(String.Format("The templated name \"{0}\" could not be resolved", name));
         }
 
         Email IEmailResolver.Resolve(string templateName)

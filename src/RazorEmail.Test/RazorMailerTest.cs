@@ -156,6 +156,7 @@ body http://testing.com
 
             var result = razorMailer.Create("test_master_content", DefaultModel, "test@test.com");
 
+            Console.WriteLine(result.Views.First().Content);
             Assert.That(result.Views.First().Content, Contains.Substring("THIS_IS_IN_THE_LAYOUT"));
 
         }

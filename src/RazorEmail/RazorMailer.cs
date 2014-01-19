@@ -30,6 +30,9 @@ namespace RazorEmail
             this.emailResolver = emailResolver;
             this.templateResolver = config.Resolver;
             this.templateService = new TemplateService(config);
+
+
+            
         }
 
         public RazorMailer(string baseDir = null)
@@ -44,6 +47,8 @@ namespace RazorEmail
             {
                 Resolver = defaultResolver
             });
+
+            Razor.SetTemplateService(templateService);
         }
 
         private static string GetDefaultBaseDir()

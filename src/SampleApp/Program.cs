@@ -36,6 +36,9 @@ namespace SampleApp
                                         }, 
                                         "Sent John Doe his forgot password message")
                         ;
+
+
+            Console.ReadKey();
         }
     }
 }

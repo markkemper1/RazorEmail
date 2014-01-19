@@ -1,8 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using RazorEngine
+@using RazorEngine.Templating
+@inherits RazorEmail.Templating.TemplateBase
+<!DOCTYPE html>
 <html>
 <head><title></title></head>
-    <body>
-        THIS_IS_IN_THE_LAYOUT
+<body>
+    THIS_IS_IN_THE_LAYOUT
         @RenderBody()
-    </body>
+
+    @Raw(Razor.Resolve("_Footer").Run(new ExecuteContext()))
+    
+    <p>Testing paritl method</p>
+    @Partial("_Footer", "hello");
+</body>
 </html>

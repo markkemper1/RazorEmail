@@ -13,8 +13,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// !! These number get written over during build, please change version number in build.msbuild !!
-[assembly: AssemblyVersion("1.1.2.0")]
-[assembly: AssemblyFileVersion("1.1.2.0")]
+[assembly: AssemblyVersion("1.1.2.49")]
+[assembly: AssemblyFileVersion("1.1.2.49")]
 
 
