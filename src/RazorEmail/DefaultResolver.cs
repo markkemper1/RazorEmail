@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Net.Mime;
 using System.Xml.Serialization;
@@ -32,7 +33,7 @@ namespace RazorEmail
             if (File.Exists(path + ".cshtml"))
                 return File.ReadAllText(path + ".cshtml");
 
-            throw new ArgumentException(String.Format("The templated name \"{0}\" could not be resolved", name));
+            return null; //Must return null if not found //throw new ArgumentException(String.Format("The templated name \"{0}\" could not be resolved", name));
         }
 
         Email IEmailResolver.Resolve(string templateName)
